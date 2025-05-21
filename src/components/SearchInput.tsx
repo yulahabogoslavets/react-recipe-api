@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { RecipeFilters } from './RecipeFilters';
 import { RecipeList } from './RecipeList';
 import type { Meal } from '../types/Meal';
+import { LoadingSkeleton } from './LoadingSkeleton';
 
 export function SearchInput() {
   const [query, setQuery] = useState('');
@@ -133,6 +134,8 @@ export function SearchInput() {
             className="h-[1em] opacity-50"
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
+            aria-hidden="true"
+            focusable="false"
           >
             <g
               strokeLinejoin="round"
@@ -152,10 +155,11 @@ export function SearchInput() {
             value={query}
             onChange={onInputChange}
             onKeyDown={onKeyDown}
+            aria-label="Search for a recipe"
           />
         </label>
 
-        <button className="btn" onClick={onSearch}>
+        <button className="btn" onClick={onSearch} aria-label="Start search">
           Search
         </button>
       </div>
@@ -171,10 +175,10 @@ export function SearchInput() {
         onCategoryChange={onCategoryChange}
         onIngredientChange={onIngredientChange}
       />
-      {loading && <div>Loading...</div>}
+      {loading && <LoadingSkeleton />}
       {filteredResults.length === 0 && !loading && !error && (
-        <div style={{ margin: '2em 0', color: '#b00', fontWeight: 'bold' }}>
-          No recipes match your filters.
+        <div role="status" aria-live="polite">
+          <h2 className="text-red-950">No recipes match your filters.</h2>
         </div>
       )}
       <RecipeList meals={filteredResults} onMealClick={handleMealClick} />

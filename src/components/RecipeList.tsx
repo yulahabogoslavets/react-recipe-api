@@ -8,7 +8,7 @@ type RecipeListProps = {
 
 export function RecipeList({ meals, onMealClick }: RecipeListProps) {
   return (
-    <ul>
+    <ul aria-label="Recipe results">
       {meals.map((meal) => (
         <li key={meal.idMeal} className="mb-4">
           <RecipeCard meal={meal} onClick={onMealClick} />

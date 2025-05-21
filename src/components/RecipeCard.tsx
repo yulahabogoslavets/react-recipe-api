@@ -22,6 +22,7 @@ export function RecipeCard({ meal, onClick }: RecipeCardProps) {
             <button
               className="btn btn-primary cursor-pointer"
               onClick={() => onClick(meal.idMeal)}
+              aria-label={`View details for ${meal.strMeal}`}
             >
               Show more
             </button>

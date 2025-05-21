@@ -37,14 +37,17 @@ export function RecipeFilters({
     <>
       {/* Show button only on mobile */}
       <button
-        className="btn btn-outline flex lg:hidden"
+        className="btn btn-outline flex md:hidden"
+        aria-controls="filters-panel"
+        aria-expanded={showFilters}
         onClick={() => setShowFilters((v) => !v)}
       >
         {showFilters ? 'Hide Filters' : 'Show Filters'}
       </button>
       <div
+        id="filters-panel"
         ref={filterRef}
-        className={`transition-all duration-500 ease-in-out overflow-hidden flex gap-4 my-2 flex-col lg:flex-row lg:!opacity-100 lg:!max-h-full`}
+        className={`transition-all duration-500 ease-in-out overflow-hidden flex gap-4 my-2 flex-col md:flex-row md:!opacity-100 md:!max-h-full`}
         style={{
           maxHeight: showFilters ? maxHeight : '0px',
           opacity: showFilters ? 1 : 0,
@@ -57,6 +60,7 @@ export function RecipeFilters({
             className="select"
             value={area}
             onChange={onAreaChange}
+            aria-label="Filter by country"
           >
             <option disabled={true}>Pick a country</option>
             {areas.map((a) => (
@@ -75,6 +79,7 @@ export function RecipeFilters({
             className="select"
             value={category}
             onChange={onCategoryChange}
+            aria-label="Filter by category"
           >
             <option disabled={true}>Pick a category</option>
             {categories.map((c) => (
@@ -93,6 +98,7 @@ export function RecipeFilters({
             className="select"
             value={ingredient}
             onChange={onIngredientChange}
+            aria-label="Filter by ingrediets"
           >
             <option disabled={true}>Pick a ingrediet</option>
             {ingredients.map((i) => (

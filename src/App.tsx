@@ -7,7 +7,9 @@ function App() {
   return (
     <>
       <main className="container mx-auto my-4 flex flex-col items-center gap-4 px-4">
-        <h1 className="text-3xl">Recipe Finder</h1>
+        <h1 className="text-3xl underline decoration-blue-500 mb-8">
+          Recipe Finder
+        </h1>
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<SearchInput />} />
