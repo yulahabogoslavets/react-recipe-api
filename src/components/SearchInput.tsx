@@ -127,14 +127,39 @@ export function SearchInput() {
 
   return (
     <>
-      <input
-        type="search"
-        placeholder="Search for a recipe..."
-        value={query}
-        onChange={onInputChange}
-        onKeyDown={onKeyDown}
-      />
-      <button onClick={onSearch}>Search</button>
+      <div className="join">
+        <label className="input">
+          <svg
+            className="h-[1em] opacity-50"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+          >
+            <g
+              strokeLinejoin="round"
+              strokeLinecap="round"
+              strokeWidth="2.5"
+              fill="none"
+              stroke="currentColor"
+            >
+              <circle cx="11" cy="11" r="8"></circle>
+              <path d="m21 21-4.3-4.3"></path>
+            </g>
+          </svg>
+          <input
+            type="search"
+            required
+            placeholder="Search for a recipe..."
+            value={query}
+            onChange={onInputChange}
+            onKeyDown={onKeyDown}
+          />
+        </label>
+
+        <button className="btn" onClick={onSearch}>
+          Search
+        </button>
+      </div>
+
       <RecipeFilters
         area={area}
         category={category}

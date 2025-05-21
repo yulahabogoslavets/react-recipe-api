@@ -8,9 +8,9 @@ type RecipeListProps = {
 
 export function RecipeList({ meals, onMealClick }: RecipeListProps) {
   return (
-    <ul style={{ listStyle: 'none', padding: 0 }}>
+    <ul>
       {meals.map((meal) => (
-        <li key={meal.idMeal} style={{ margin: '1em 0' }}>
+        <li key={meal.idMeal} className="mb-4">
           <RecipeCard meal={meal} onClick={onMealClick} />
         </li>
       ))}

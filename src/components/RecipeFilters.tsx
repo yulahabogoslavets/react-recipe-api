@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 
 type RecipeFiltersProps = {
   area: string;
@@ -23,29 +23,87 @@ export function RecipeFilters({
   onCategoryChange,
   onIngredientChange,
 }: RecipeFiltersProps) {
+  const [showFilters, setShowFilters] = useState(false);
+  const filterRef = useRef<HTMLDivElement>(null);
+  const [maxHeight, setMaxHeight] = useState('0px');
+
+  useEffect(() => {
+    if (filterRef.current) {
+      setMaxHeight(showFilters ? `${filterRef.current.scrollHeight}px` : '0px');
+    }
+  }, [showFilters, areas, categories, ingredients]);
+
   return (
-    <div style={{ display: 'flex', gap: '1em', margin: '1em 0' }}>
-      <select value={area} onChange={onAreaChange}>
-        {areas.map((a) => (
-          <option key={a} value={a}>
-            {a}
-          </option>
-        ))}
-      </select>
-      <select value={category} onChange={onCategoryChange}>
-        {categories.map((c) => (
-          <option key={c} value={c}>
-            {c}
-          </option>
-        ))}
-      </select>
-      <select value={ingredient} onChange={onIngredientChange}>
-        {ingredients.map((i) => (
-          <option key={i} value={i}>
-            {i}
-          </option>
-        ))}
-      </select>
-    </div>
+    <>
+      {/* Show button only on mobile */}
+      <button
+        className="btn btn-outline flex lg:hidden"
+        onClick={() => setShowFilters((v) => !v)}
+      >
+        {showFilters ? 'Hide Filters' : 'Show Filters'}
+      </button>
+      <div
+        ref={filterRef}
+        className={`transition-all duration-500 ease-in-out overflow-hidden flex gap-4 my-2 flex-col lg:flex-row lg:!opacity-100 lg:!max-h-full`}
+        style={{
+          maxHeight: showFilters ? maxHeight : '0px',
+          opacity: showFilters ? 1 : 0,
+        }}
+      >
+        <fieldset className="fieldset">
+          <legend className="fieldset-legend">Country</legend>
+          <select
+            defaultValue="Pick a country"
+            className="select"
+            value={area}
+            onChange={onAreaChange}
+          >
+            <option disabled={true}>Pick a country</option>
+            {areas.map((a) => (
+              <option key={a} value={a}>
+                {a}
+              </option>
+            ))}
+          </select>
+          <span className="label">Optional</span>
+        </fieldset>
+
+        <fieldset className="fieldset">
+          <legend className="fieldset-legend">Category</legend>
+          <select
+            defaultValue="Pick a category"
+            className="select"
+            value={category}
+            onChange={onCategoryChange}
+          >
+            <option disabled={true}>Pick a category</option>
+            {categories.map((c) => (
+              <option key={c} value={c}>
+                {c}
+              </option>
+            ))}
+          </select>
+          <span className="label">Optional</span>
+        </fieldset>
+
+        <fieldset className="fieldset">
+          <legend className="fieldset-legend">Ingredients</legend>
+          <select
+            defaultValue="Pick a ingrediet"
+            className="select"
+            value={ingredient}
+            onChange={onIngredientChange}
+          >
+            <option disabled={true}>Pick a ingrediet</option>
+            {ingredients.map((i) => (
+              <option key={i} value={i}>
+                {i}
+              </option>
+            ))}
+          </select>
+          <span className="label">Optional</span>
+        </fieldset>
+      </div>
+    </>
   );
 }

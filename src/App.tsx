@@ -6,12 +6,15 @@ import { MealDetail } from './components/MealDetail';
 function App() {
   return (
     <>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<SearchInput />} />
-          <Route path="/meal/:id" element={<MealDetail />} />
-        </Routes>
-      </BrowserRouter>
+      <main className="container mx-auto my-4 flex flex-col items-center gap-4 px-4">
+        <h1 className="text-3xl">Recipe Finder</h1>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<SearchInput />} />
+            <Route path="/meal/:id" element={<MealDetail />} />
+          </Routes>
+        </BrowserRouter>
+      </main>
     </>
   );
 }
