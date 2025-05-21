@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useDeferredValue, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { RecipeFilters } from './RecipeFilters';
 import { RecipeList } from './RecipeList';
@@ -13,6 +13,7 @@ export function SearchInput() {
   const [area, setArea] = useState('All');
   const [category, setCategory] = useState('All');
   const [ingredient, setIngredient] = useState('All');
+  const deferredQuery = useDeferredValue(query);
 
   useEffect(() => {
     const fetchInitialRecipes = async () => {
@@ -96,29 +97,44 @@ export function SearchInput() {
     if (e.key === 'Enter') onSearch();
   };
 
-  const filteredResults = results.filter(
-    (meal) =>
-      (area === 'All' || meal.strArea === area) &&
-      (category === 'All' || meal.strCategory === category) &&
-      (ingredient === 'All' || meal.strIngredient1 === ingredient)
-  );
+  const filteredResults = useMemo(() => {
+    return results.filter(
+      (meal) =>
+        (area === 'All' || meal.strArea === area) &&
+        (category === 'All' || meal.strCategory === category) &&
+        (ingredient === 'All' || meal.strIngredient1 === ingredient) &&
+        (!deferredQuery ||
+          meal.strMeal.toLowerCase().includes(deferredQuery.toLowerCase()))
+    );
+  }, [results, area, category, ingredient, deferredQuery]);
 
-  const dynamicAreas = [
-    'All',
-    ...Array.from(new Set(results.map((meal) => meal.strArea))).filter(Boolean),
-  ];
-  const dynamicCategories = [
-    'All',
-    ...Array.from(
-      new Set(filteredResults.map((meal) => meal.strCategory))
-    ).filter(Boolean),
-  ];
-  const dynamicIngredients = [
-    'All',
-    ...Array.from(
-      new Set(filteredResults.map((meal) => meal.strIngredient1))
-    ).filter(Boolean),
-  ];
+  const dynamicAreas = useMemo(
+    () => [
+      'All',
+      ...Array.from(new Set(results.map((meal) => meal.strArea))).filter(
+        Boolean
+      ),
+    ],
+    [results]
+  );
+  const dynamicCategories = useMemo(
+    () => [
+      'All',
+      ...Array.from(
+        new Set(filteredResults.map((meal) => meal.strCategory))
+      ).filter(Boolean),
+    ],
+    [filteredResults]
+  );
+  const dynamicIngredients = useMemo(
+    () => [
+      'All',
+      ...Array.from(
+        new Set(filteredResults.map((meal) => meal.strIngredient1))
+      ).filter(Boolean),
+    ],
+    [filteredResults]
+  );
 
   const navigate = useNavigate();
   const handleMealClick = (mealId: string) => {
