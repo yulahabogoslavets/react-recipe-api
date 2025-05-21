@@ -181,6 +181,18 @@ export function SearchInput() {
           <h2 className="text-red-950">No recipes match your filters.</h2>
         </div>
       )}
+
+      {filteredResults.length >= 1 && (
+        <div aria-live="polite" className="mb-2">
+          <p className="underline decoration-blue-500">
+            Results:{' '}
+            <span className="font-semibold" role="status">
+              {filteredResults.length}
+            </span>
+          </p>
+        </div>
+      )}
+
       <RecipeList meals={filteredResults} onMealClick={handleMealClick} />
     </>
   );
