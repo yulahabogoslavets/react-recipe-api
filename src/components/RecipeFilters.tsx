@@ -56,7 +56,6 @@ export function RecipeFilters({
         <fieldset className="fieldset">
           <legend className="fieldset-legend">Country</legend>
           <select
-            defaultValue="Pick a country"
             className="select"
             value={area}
             onChange={onAreaChange}
@@ -75,7 +74,6 @@ export function RecipeFilters({
         <fieldset className="fieldset">
           <legend className="fieldset-legend">Category</legend>
           <select
-            defaultValue="Pick a category"
             className="select"
             value={category}
             onChange={onCategoryChange}
@@ -94,7 +92,6 @@ export function RecipeFilters({
         <fieldset className="fieldset">
           <legend className="fieldset-legend">Ingredients</legend>
           <select
-            defaultValue="Pick a ingrediet"
             className="select"
             value={ingredient}
             onChange={onIngredientChange}
