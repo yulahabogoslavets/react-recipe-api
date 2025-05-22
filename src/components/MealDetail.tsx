@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
+import { LoadingSkeleton } from './LoadingSkeleton';
 
 interface Meal {
   idMeal: string;
@@ -9,7 +10,8 @@ interface Meal {
   strInstructions: string;
   strMealThumb: string;
   strYoutube: string;
-  // Add more fields if needed
+  strTags: string;
+  strSource: string;
 }
 
 export function MealDetail() {
@@ -37,41 +39,202 @@ export function MealDetail() {
     fetchMeal();
   }, [id]);
 
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div style={{ color: 'red' }}>{error}</div>;
+  const [tagResults, setTagResults] = useState<Meal[] | null>(null);
+  const [selectedTag, setSelectedTag] = useState<string | null>(null);
+
+  const handleTagClick = async (tag: string) => {
+    setSelectedTag(tag);
+    setTagResults(null);
+    // TheMealDB does not have a direct tag endpoint, so we search by tag
+    const res = await fetch(
+      `https://www.themealdb.com/api/json/v1/1/filter.php?c=${encodeURIComponent(
+        tag
+      )}`
+    );
+    const data = await res.json();
+    setTagResults(data.meals || []);
+  };
+
+  if (loading) return <LoadingSkeleton />;
+  if (error)
+    return (
+      <div role="status" aria-live="polite" className="text-red-500">
+        {error}
+      </div>
+    );
   if (!meal) return <div>Meal not found.</div>;
 
   return (
-    <div
-      style={{
-        maxWidth: 600,
-        margin: '2em auto',
-        padding: '1em',
-        border: '1px solid #ccc',
-        borderRadius: 8,
-      }}
-    >
-      <Link to="/">← Back to search</Link>
-      <h2>{meal.strMeal}</h2>
-      <img
-        src={meal.strMealThumb}
-        alt={meal.strMeal}
-        style={{ width: '100%', borderRadius: 8 }}
-      />
-      <p>
-        <strong>Category:</strong> {meal.strCategory}
-      </p>
-      <p>
-        <strong>Area:</strong> {meal.strArea}
-      </p>
-      <p>{meal.strInstructions}</p>
-      {meal.strYoutube && (
-        <p>
-          <a href={meal.strYoutube} target="_blank" rel="noopener noreferrer">
-            Watch on YouTube
+    <>
+      <div className="container mx-auto my-4  px-4">
+        <div className=" bg-base-200 ">
+          <div className="w-full px-2 pt-4">
+            <Link to="/" className="text-sm underline hover:text-blue-500">
+              ← Back to search
+            </Link>
+          </div>
+          <div className="flex flex-col sm:flex-row gap-4 w-full justify-between items-center p-4">
+            <div className="flex flex-col items-center sm:items-start gap-2 md:gap-4">
+              <h2 className="text-3xl md:text-5xl font-bold text-center md:text-left md:mb-2 text-blue-500">
+                {meal.strMeal}
+              </h2>
+              <p>
+                <strong>Category:</strong> {meal.strCategory}
+              </p>
+              <p>
+                <strong>Area:</strong> {meal.strArea}
+              </p>
+            </div>
+            <img
+              src={meal.strMealThumb}
+              alt={meal.strMeal}
+              className="w-full  max-w-3xs rounded-lg shadow-2xl lg:max-w-xs"
+            />
+          </div>
+        </div>
+
+        <div className="bg-base-100 border-base-300 collapse border my-2">
+          <input type="checkbox" className="peer" />
+          <div className="collapse-title bg-blue-500 text-white peer-checked:bg-secondary peer-checked:text-secondary-content">
+            <h3>Ingredients</h3>
+          </div>
+          <div className="collapse-content bg-blue-500 text-white peer-checked:bg-secondary peer-checked:text-secondary-content">
+            <ul>
+              {Object.keys(meal)
+                .filter(
+                  (key) =>
+                    key.startsWith('strIngredient') &&
+                    meal[key as keyof typeof meal] &&
+                    meal[key as keyof typeof meal]?.trim()
+                )
+                .map((key) => {
+                  const num = key.replace('strIngredient', '');
+                  const ingredient = meal[key as keyof typeof meal];
+                  const measure = meal[`strMeasure${num}` as keyof typeof meal];
+                  return (
+                    <li key={key}>
+                      <strong>{ingredient}</strong>
+                      {measure && measure.trim() ? ` - ${measure}` : ''}
+                    </li>
+                  );
+                })}
+            </ul>
+          </div>
+        </div>
+
+        {meal.strInstructions && (
+          <>
+            <p className="text-justify my-2">{meal.strInstructions}</p>
+          </>
+        )}
+
+        {meal.strYoutube && (
+          <a
+            href={meal.strYoutube}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-sm  hover:text-blue-500 flex items-center gap-2 mb-4"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16px"
+              height="16px"
+              viewBox="0 0 512 512"
+              aria-hidden="true"
+              focusable="false"
+            >
+              <path
+                fill="none"
+                stroke="currentColor"
+                strokeLinejoin="round"
+                strokeWidth={32}
+                d="M448 256L272 88v96C103.57 184 64 304.77 64 424c48.61-62.24 91.6-96 208-96v96Z"
+              ></path>
+            </svg>
+            <span className="underline">Watch on YouTube</span>
           </a>
-        </p>
+        )}
+
+        {meal.strSource && (
+          <>
+            <a
+              href="{meal.strSource}"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 mb-4 text-sm  hover:text-blue-500 flex-wrap"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16px"
+                height="16px"
+                viewBox="0 0 32 32"
+                aria-hidden="true"
+                focusable="false"
+              >
+                <path
+                  fill="currentColor"
+                  d="M16 3C8.832 3 3 8.832 3 16s5.832 13 13 13s13-5.832 13-13S23.168 3 16 3m0 2c6.087 0 11 4.913 11 11s-4.913 11-11 11S5 22.087 5 16S9.913 5 16 5m-.094 5c-3.324 0-6 2.676-6 6s2.676 6 6 6c2.4 0 4.45-1.44 5.406-3.47l-1.812-.843C18.855 19.058 17.506 20 15.906 20c-2.276 0-4-1.724-4-4s1.724-4 4-4c1.6 0 2.95.942 3.594 2.313l1.813-.844c-.956-2.03-3.007-3.47-5.407-3.47z"
+                ></path>
+              </svg>
+              <span className="underline">Source:</span> {meal.strSource}
+            </a>
+          </>
+        )}
+
+        {meal.strTags && meal.strTags.trim() && (
+          <>
+            <ul className="flex flex-wrap gap-4">
+              {meal.strTags.split(',').map((tag: string) => (
+                <li
+                  key={tag.trim()}
+                  className="badge badge-neutral badge-dash  hover:bg-blue-400 hover:text-white"
+                >
+                  <button
+                    onClick={() => handleTagClick(tag.trim())}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ')
+                        handleTagClick(tag.trim());
+                    }}
+                    className="cursor-pointer"
+                    aria-label={`Show recipes with tag ${tag.trim()}`}
+                  >
+                    {tag.trim()}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </>
+        )}
+      </div>
+
+      {selectedTag && (
+        <div className="mt-6">
+          <h4 className="font-bold mb-2">
+            Recipes with tag:{' '}
+            <span className="text-blue-600">{selectedTag}</span>
+          </h4>
+          {tagResults === null ? (
+            <div>Loading...</div>
+          ) : tagResults.length === 0 ? (
+            <div>No recipes found for this tag.</div>
+          ) : (
+            <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {tagResults.map((meal) => (
+                <li key={meal.idMeal} className="border rounded p-2">
+                  <Link to={`/meal/${meal.idMeal}`} className="hover:underline">
+                    <img
+                      src={meal.strMealThumb}
+                      alt={meal.strMeal}
+                      className="w-full h-32 object-cover rounded mb-2"
+                    />
+                    <div>{meal.strMeal}</div>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
       )}
-    </div>
+    </>
   );
 }
