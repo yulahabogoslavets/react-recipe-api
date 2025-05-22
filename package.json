@@ -1,6 +1,7 @@
 {
     "name": "react-recipe-api",
-    "private": true,
+    "private": false,
+    "homepage": "https://yulahabogoslavets.github.io/react-recipe-api/",
     "version": "0.0.0",
     "type": "module",
     "scripts": {
@@ -8,11 +9,14 @@
         "build": "tsc -b && vite build",
         "lint": "eslint .",
         "preview": "vite preview",
-        "format": "prettier --write ."
+        "format": "prettier --write .",
+        "predeploy": "npm run build",
+        "deploy": "gh-pages -d dist"
     },
     "dependencies": {
         "@tailwindcss/vite": "^4.1.7",
         "daisyui": "^5.0.35",
+        "gh-pages": "^6.3.0",
         "react": "^19.1.0",
         "react-dom": "^19.1.0",
         "react-router-dom": "^7.6.0",
