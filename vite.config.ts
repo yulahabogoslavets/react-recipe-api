@@ -4,7 +4,7 @@ import tailwindcss from '@tailwindcss/vite'
 
 export default defineConfig({
     plugins: [react(), tailwindcss()],
-    base: '/react-recipe-api/',
+    base: '/react-recipe-api',
     build: {
         rollupOptions: {
             output: {
