@@ -97,7 +97,15 @@ export function MealDetail() {
                 </div>
 
                 <div className="bg-base-100 border-base-300 collapse my-2 border">
-                    <input type="checkbox" className="peer" />
+                    <label htmlFor="ingredients-toggle" className="sr-only">
+                        Show ingredients
+                    </label>
+                    <input
+                        type="checkbox"
+                        className="peer"
+                        id="ingredients-toggle"
+                    />
+
                     <div className="collapse-title peer-checked:bg-secondary peer-checked:text-secondary-content bg-blue-500 text-white">
                         <h3>Ingredients</h3>
                     </div>
