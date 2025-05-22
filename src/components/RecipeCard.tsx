@@ -13,7 +13,7 @@ export function RecipeCard({ meal, onClick }: RecipeCardProps) {
         <>
             <div className="card bg-base-100 image-full w-3xs shadow-sm">
                 <figure>
-                    <img src={meal.strMealThumb} alt={meal.strMeal} />
+                    <img src={meal.strMealThumb} alt={meal.strMeal} loading="lazy" />
                 </figure>
                 <div className="card-body">
                     <h2 className="card-title">{meal.strMeal}</h2>

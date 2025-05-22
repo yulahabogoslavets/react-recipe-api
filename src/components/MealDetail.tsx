@@ -92,6 +92,7 @@ export function MealDetail() {
                             src={meal.strMealThumb}
                             alt={meal.strMeal}
                             className="w-full max-w-3xs rounded-lg shadow-2xl lg:max-w-xs"
+                            loading="lazy"
                         />
                     </div>
                 </div>
