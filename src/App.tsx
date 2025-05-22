@@ -10,7 +10,7 @@ function App() {
                 <h1 className="mb-8 text-3xl underline decoration-blue-500">
                     Recipe Finder
                 </h1>
-                <BrowserRouter>
+                <BrowserRouter basename="/react-recipe-api">
                     <Routes>
                         <Route path="/" element={<SearchInput />} />
                         <Route path="/meal/:id" element={<MealDetail />} />
